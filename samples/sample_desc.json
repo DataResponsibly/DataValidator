@@ -1,0 +1,25 @@
+{
+  "attribute_description" : {
+    "key" : {
+      "data_type": "integer",
+      "unique": true,
+      "required": true
+    },
+    "zip" : {
+      "data_type": "string"
+    },
+    "tract" : {
+      "data_type": "string"
+    },
+    "latitude" : {
+      "data_type": "number"
+    },
+    "longitude" : {
+      "data_type": "number"
+    },
+    "soc" : {
+      "data_type": "string",
+      "unique": true
+    }
+  }
+}
