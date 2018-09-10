@@ -2,8 +2,12 @@ import sys
 
 from valitool import vali
 
+'''
+This is the cli for the validation tool. This is the script to run to utilize the tool.
+The other scripts are kept modular.
+'''
+
 if len(sys.argv) > 2:
-    print(sys.argv)
     csv_file = sys.argv[1]
     desc_file = sys.argv[2]
     attachments = []

@@ -6,8 +6,6 @@ import os
 import ast
 import smtplib
 
-
-
 from goodtables import validate,check,Error,config
 from goodtables import Inspector
 import pandas
