@@ -22,8 +22,6 @@ def schema_gen(input_file,attachments,path):
         has_file = True
     else:
         has_file = False
-    print(has_file)
-    print(path)
     if path != "":
         path = path + '/'
     schema = { 'primaryKey': '', 'fields' : [] }
@@ -34,15 +32,10 @@ def schema_gen(input_file,attachments,path):
         desc_json = json.loads(y)
         keys = desc_json['attribute_description'].keys()
         for key in keys:
-            is_ss = False
             field = { 'name': '', 'type': '' }
             field['name'] = key
             type = desc_json['attribute_description'][key]['data_type'].lower()
-            if type == 'socialsecuritynumber': # TODO: Add in constraint for SSN
-                field['type'] = 'string'
-                is_ss = True
-            else:
-                field['type'] = type
+            field['type'] = type
             if has_file:
                 filename = key + '.json'
                 if path + key + '.json' in attachments: # If a file is attached, creates enumerated list constraint for validation
@@ -51,19 +44,16 @@ def schema_gen(input_file,attachments,path):
                         enums = json.loads(json_raw)
                         field['constraints'] = {}
                         field['constraints']['enum'] = enums[key]
-
-            if 'required' in desc_json['attribute_description'][key].keys():
+            if 'required' in desc_json['attribute_description'][key].keys(): # Check for required constraint.
                 if desc_json['attribute_description'][key]['required']:
                     if 'constraints' not in field.keys():
                         field['constraints'] = {}
                     field['constraints']['required'] = True
-            if 'unique' in desc_json['attribute_description'][key].keys():
+            if 'unique' in desc_json['attribute_description'][key].keys(): # Check for unique constraint.
                 if desc_json['attribute_description'][key]['unique']:
                     if 'constraints' not in field.keys():
                         field['constraints'] = {}
                     field['constraints']['unique'] = True
-
-
             field_list.append(field)
         schema['fields'] = field_list
     return schema

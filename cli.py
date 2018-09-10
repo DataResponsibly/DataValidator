@@ -13,7 +13,6 @@ if len(sys.argv) > 2:
     attachments = []
     if len(sys.argv) > 3:
         for i in range(3,len(sys.argv)):
-            print(i)
             attachments.append(sys.argv[i])
     vali(csv_file, desc_file, attachments)
 else:

@@ -25,11 +25,9 @@ def validation(csv_,cust,file_name,path):
         for table in report['tables']:
             s = ast.literal_eval(table['datapackage'])
             filename = s['name'] + "_error_dump.txt"
-            print(table)
             with open(filename,'w',) as fp:
                 error_rows = []
                 for error in table['errors']:
-                    print(error)
                     row = error['row-number']
                     error_rows.append(row)
                     if 'col' in error.keys():
@@ -39,6 +37,7 @@ def validation(csv_,cust,file_name,path):
                     err_str = error['message']
                     code = ""
                     for err in cust:
+                        # This replaces certain error codes with better formatted, more human readable variants.
                         if col in err['columns'] and error['code'] != 'required-constraint' and error['code'] != 'type-or-format-error':
                             err_str = err_str[:err_str.find("\"",err_str.find("\"")+1,)+1]
                             value = err_str[err_str.find("\"")+1:]
@@ -69,9 +68,6 @@ def validation(csv_,cust,file_name,path):
                             if row_number in error_rows:
                                 csv_w.writerow(row)
                             row_number = row_number + 1
-
-
-            #return notification('',email_data,pretty_str,s['name'])
             with open(path + file_name + '_error_report.txt','w') as fp:
                 fp.write(str(table['errors']))
             return table['errors']
@@ -79,19 +75,17 @@ def validation(csv_,cust,file_name,path):
         return "All clear"
 def vali(file_name,desc_file,attachments):
     filename, file_extension = os.path.splitext(file_name)
-    print(filename)
     f_path = filename.split('/')
-    print(f_path)
     filename = f_path[len(f_path)-1]
     del f_path[len(f_path)-1]
     path = '/'.join(f_path)
     schema = schema_gen(desc_file,attachments,path) # TODO: Enhance combatibility
-    custom_error = [{'name': 'phil_zip', 'columns': [], 'message': ' is not a Philadelphia zip code.'},{'name': 'phil_tract', 'columns': [], 'message': ' is not a Philadelphia Census Tract.'},{'name': 'lat', 'columns': [], 'message': ' is not a latitude near Philadelphia.'},{'name': 'lon', 'columns': [], 'message': ' is not a longitude near Philadelphia.'}]
+    #custom_error = [{'name': 'phil_zip', 'columns': [], 'message': ' is not a Philadelphia zip code.'},{'name': 'phil_tract', 'columns': [], 'message': ' is not a Philadelphia Census Tract.'},{'name': 'lat', 'columns': [], 'message': ' is not a latitude near Philadelphia.'},{'name': 'lon', 'columns': [], 'message': ' is not a longitude near Philadelphia.'}]
+    # The above is an example of custom error formatting.
     col_count = 1
     col_count = col_count + 1
-
+    custom_error = []
     data_package_json = { "name": filename, "title": filename, "resources": [{"name": filename, "path": file_name, "schema": schema}]}
     # The csv and schema must be loaded together into a datapackage for use with goodtables
     if file_extension == '.csv':
-        #anamoly_detection(file_name)
         return validation(data_package_json,custom_error,filename,path)
