@@ -14,12 +14,14 @@ import pandas
 
 from schema_generator import schema_gen
 
-def validation(csv_,cust,file_name):
+def validation(csv_,cust,file_name,path):
     inspector = Inspector()
     inspector.__init__(row_limit=100000,error_limit=100000) # arbitrary row limit
     report = inspector.inspect(csv_)
     email_data = []
     pretty_str = ''
+    if path != "":
+        path = path + '/'
 
     if not report['valid']: # an error report will only be sent if there are issues to be found
         for table in report['tables']:
@@ -58,8 +60,8 @@ def validation(csv_,cust,file_name):
                             code = error['code']
                     pretty_str = pretty_str + err_str + "\n"
                     email_data.append({'code': code, 'row': row, 'col': col, 'value': value})
-                with open(file_name + '_errorlog.csv','w') as sp:
-                    with open('samples/' + file_name + '.csv','r') as rp:
+                with open(path + file_name + '_errorlog.csv','w') as sp:
+                    with open(path + file_name + '.csv','r') as rp:
                         csv_r = csv.reader(rp)
                         csv_w = csv.writer(sp)
                         headers = csv_r.__next__()
@@ -72,6 +74,8 @@ def validation(csv_,cust,file_name):
 
 
             #return notification('',email_data,pretty_str,s['name'])
+            with open(path + file_name + '_error_report.txt','w') as fp:
+                fp.write(str(table['errors']))
             return table['errors']
     else:
         return "All clear"
@@ -86,24 +90,10 @@ def vali(file_name,desc_file,attachments):
     schema = schema_gen(desc_file,attachments,path) # TODO: Enhance combatibility
     custom_error = [{'name': 'phil_zip', 'columns': [], 'message': ' is not a Philadelphia zip code.'},{'name': 'phil_tract', 'columns': [], 'message': ' is not a Philadelphia Census Tract.'},{'name': 'lat', 'columns': [], 'message': ' is not a latitude near Philadelphia.'},{'name': 'lon', 'columns': [], 'message': ' is not a longitude near Philadelphia.'}]
     col_count = 1
-    for field in schema['fields']:
-        if 'constraints' in field:
-            if 'custom' in field['constraints']:
-                custom = field['constraints']['custom']
-                if custom == 'lat': # lat refers to any latitude that -could- be in and around Philadelphia
-                    del field['constraints']['custom']
-                    field['constraints']['minimum'] = 38
-                    field['constraints']['maximum'] = 42
-                    custom_error[2]['columns'].append(col_count)
-                elif custom == 'lon': # lon refers to any longitude that -could- be in and around Philadelphia
-                    del field['constraints']['custom']
-                    field['constraints']['maximum'] = -73
-                    field['constraints']['minimum'] = -77
-                    custom_error[3]['columns'].append(col_count)
-        col_count = col_count + 1
+    col_count = col_count + 1
 
     data_package_json = { "name": filename, "title": filename, "resources": [{"name": filename, "path": file_name, "schema": schema}]}
     # The csv and schema must be loaded together into a datapackage for use with goodtables
     if file_extension == '.csv':
         #anamoly_detection(file_name)
-        return validation(data_package_json,custom_error,filename)
+        return validation(data_package_json,custom_error,filename,path)

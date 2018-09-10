@@ -16,7 +16,7 @@ This script takes in a piece of metadata from the DataResponsibly Data Synthesiz
 and creates a Table Schema of the provided dataset, as detailed at https://frictionlessdata.io/specs/table-schema/
 '''
 
-def schema_gen(file,attachments,path):
+def schema_gen(input_file,attachments,path):
 
     if len(attachments) > 0: # Used to attach files in the format described above.
         has_file = True
@@ -29,7 +29,7 @@ def schema_gen(file,attachments,path):
     schema = { 'primaryKey': '', 'fields' : [] }
     field_template = { 'name': '', 'type': '' } # template used to base field data off of
     field_list = []
-    with open(file) as fp:
+    with open(input_file) as fp:
         y = fp.read()
         desc_json = json.loads(y)
         keys = desc_json['attribute_description'].keys()
@@ -45,21 +45,23 @@ def schema_gen(file,attachments,path):
                 field['type'] = type
             if has_file:
                 filename = key + '.json'
-                if path + key +'.json' in attachments: # If a file is attached, creates enumerated list constraint for validation
-                    with open('samples/' + key +'.json') as sp:
+                if path + key + '.json' in attachments: # If a file is attached, creates enumerated list constraint for validation
+                    with open(path + key +'.json') as sp:
                         json_raw = sp.read()
                         enums = json.loads(json_raw)
                         field['constraints'] = {}
                         field['constraints']['enum'] = enums[key]
 
-            if desc_json['attribute_description'][key]['required']:
-                if 'constraints' not in field.keys():
-                    field['constraints'] = {}
-                field['constraints']['required'] = True
-            if desc_json['attribute_description'][key]['unique']:
-                if 'constraints' not in field.keys():
-                    field['constraints'] = {}
-                field['constraints']['unique'] = True
+            if 'required' in desc_json['attribute_description'][key].keys():
+                if desc_json['attribute_description'][key]['required']:
+                    if 'constraints' not in field.keys():
+                        field['constraints'] = {}
+                    field['constraints']['required'] = True
+            if 'unique' in desc_json['attribute_description'][key].keys():
+                if desc_json['attribute_description'][key]['unique']:
+                    if 'constraints' not in field.keys():
+                        field['constraints'] = {}
+                    field['constraints']['unique'] = True
 
 
             field_list.append(field)

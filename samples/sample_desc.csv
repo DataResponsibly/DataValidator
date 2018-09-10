@@ -1,7 +1,0 @@
-name,data_type,required,unique
-key,integer,true,true
-zip,string,false,false
-tract,string,false,false
-latitude,number,false,false
-longitude,number,false,false
-soc,string,false,true
