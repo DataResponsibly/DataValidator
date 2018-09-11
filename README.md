@@ -1,4 +1,4 @@
-#Data Validator
+# Data Validator
 
 This is a script meant to validate tables, specifically .csv files for now, according to a mix of table schema and custom constraints. The script is called in the form of "cli.py *.csv *.json" with optional attachment files being placed after.
 
