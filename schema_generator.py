@@ -44,7 +44,7 @@ def schema_gen(input_file,attachments,path):
                         enums = json.loads(json_raw)
                         field['constraints'] = {}
                         field['constraints']['enum'] = enums[key]
-            if 'required' in desc_json['attribute_description'][key].keys(): # Check for required constraint.
+            if 'required' in desc_json['attribute_description'][key].keys() and 'unique' not in desc_json['attribute_description'][key].keys(): # Check for required constraint.
                 if desc_json['attribute_description'][key]['required']:
                     if 'constraints' not in field.keys():
                         field['constraints'] = {}
