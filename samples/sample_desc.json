@@ -9,7 +9,7 @@
       "data_type": "string"
     },
     "tract" : {
-      "data_type": "string"
+      "data_type": "integer"
     },
     "latitude" : {
       "data_type": "number"
@@ -18,7 +18,7 @@
       "data_type": "number"
     },
     "soc" : {
-      "data_type": "string",
+      "data_type": "socialsecuritynumber",
       "unique": true
     }
   }
