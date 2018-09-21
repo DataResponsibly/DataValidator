@@ -1,6 +1,6 @@
-#Data Validator
+# Data Validator
 
-###Basic Info
+### Basic Info
 
 This is a script meant to validate tables, specifically .csv files for now, according to a mix of table schema and custom constraints. The script is called in the form of "cli.py *.csv *.json" with optional attachment files being placed after.
 
@@ -14,12 +14,12 @@ Currently, the errors are pushed to two files. The first, that is "file_name"_er
 
 The schema_generator script is a helper script meant to convert metadata into a table schema file-like object for use in the main validation tool.
 
-###Running the Tool
+### Running the Tool
 
-####Step 1. Run the Script
+#### Step 1. Run the Script
 - Run the script as follows, with the "sample" name being used as a placeholder for your name:
 `python3 cli.py sample_table.csv sample_desc.json zip.json`
 - In this case, the first two files are required, one being a csv, and the other being a json describing the csv. The third file is an optional file, allowing for further narrowing of valid information. It is named after the 'zip' field of the table.
 
-####Step 2. The Output
+#### Step 2. The Output
 - Once run, this produces two files, sampe_table_error_report.txt and sample_table_errorlog.csv. These have been described above.
